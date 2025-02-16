@@ -3,7 +3,9 @@
 	left: 0;
 	width: 616px;
 	height: 100%;
-	overflow: scroll;
+
+	// overflow: scroll;
+	overflow: auto;
 	transform: translate(-616px);
 	transition: transform 0.5s ease;
 }
