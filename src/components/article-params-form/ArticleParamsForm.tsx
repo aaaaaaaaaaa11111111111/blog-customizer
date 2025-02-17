@@ -4,9 +4,39 @@ import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
 import { useState } from 'react';
 import { Text } from 'src/ui/text';
+import {
+	ArticleStateType,
+	fontFamilyOptions,
+	OptionType,
+} from 'src/constants/articleProps';
+import { Select } from 'src/ui/select';
 
-export const ArticleParamsForm = () => {
+type ArticleParamsFormProps = {
+	appState: ArticleStateType;
+	setAppState: (props: ArticleStateType) => void;
+};
+
+export const ArticleParamsForm = ({
+	appState,
+	setAppState,
+}: ArticleParamsFormProps) => {
 	const [panelState, setPanelState] = useState<boolean>(false);
+	const [formState, setFormState] = useState(appState);
+
+	const handleFormChange =
+		(option: keyof ArticleStateType) => (value: OptionType) => {
+			setFormState((prevState) => ({
+				...prevState,
+				[option]: value,
+			}));
+		};
+
+	const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setAppState(formState);
+		setPanelState(false);
+	};
+
 	return (
 		<>
 			<ArrowButton
@@ -15,10 +45,16 @@ export const ArticleParamsForm = () => {
 			/>
 			<aside
 				className={clsx(styles.container, panelState && styles.container_open)}>
-				<form className={styles.form}>
+				<form className={styles.form} onSubmit={formSubmit}>
 					<Text size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
+					<Select
+						selected={formState.fontFamilyOption}
+						options={fontFamilyOptions}
+						onChange={handleFormChange('fontFamilyOption')}
+						title='Шрифт'
+					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />
