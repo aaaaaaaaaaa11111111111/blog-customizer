@@ -2,7 +2,7 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Text } from 'src/ui/text';
 import {
 	ArticleStateType,
@@ -11,10 +11,13 @@ import {
 	fontSizeOptions,
 	fontColors,
 	defaultArticleState,
+	backgroundColors,
+	contentWidthArr,
 } from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
 
 type ArticleParamsFormProps = {
 	appState: ArticleStateType;
@@ -27,6 +30,7 @@ export const ArticleParamsForm = ({
 }: ArticleParamsFormProps) => {
 	const [panelState, setPanelState] = useState<boolean>(false);
 	const [formState, setFormState] = useState(appState);
+	const asideRef = useRef<HTMLDivElement>(null);
 
 	const handleFormChange =
 		(option: keyof ArticleStateType) => (value: OptionType) => {
@@ -47,6 +51,13 @@ export const ArticleParamsForm = ({
 		setFormState(defaultArticleState);
 	};
 
+	useOutsideClickClose({
+		isOpen: panelState,
+		rootRef: asideRef,
+		onClose: () => setPanelState(!panelState),
+		onChange: setPanelState,
+	});
+
 	return (
 		<>
 			<ArrowButton
@@ -54,6 +65,7 @@ export const ArticleParamsForm = ({
 				onClick={() => setPanelState(!panelState)}
 			/>
 			<aside
+				ref={asideRef}
 				className={clsx(styles.container, panelState && styles.container_open)}>
 				<form className={styles.form} onSubmit={formSubmit} onReset={formReset}>
 					<Text size={31} weight={800} uppercase>
@@ -63,7 +75,7 @@ export const ArticleParamsForm = ({
 						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
 						onChange={handleFormChange('fontFamilyOption')}
-						title='Шрифт'
+						title={'Шрифт'}
 					/>
 					<RadioGroup
 						name={formState.fontSizeOption.className}
@@ -79,7 +91,18 @@ export const ArticleParamsForm = ({
 						title={'цвет шрифта'}
 					/>
 					<Separator />
-
+					<Select
+						selected={formState.backgroundColor}
+						options={backgroundColors}
+						onChange={handleFormChange('backgroundColor')}
+						title={'цвет фона'}
+					/>
+					<Select
+						selected={formState.contentWidth}
+						options={contentWidthArr}
+						onChange={handleFormChange('contentWidth')}
+						title={'ширина контента'}
+					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />
