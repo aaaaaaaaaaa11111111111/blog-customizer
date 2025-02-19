@@ -20,16 +20,12 @@ import { Separator } from 'src/ui/separator';
 import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
 
 type ArticleParamsFormProps = {
-	appState: ArticleStateType;
 	setAppState: (props: ArticleStateType) => void;
 };
 
-export const ArticleParamsForm = ({
-	appState,
-	setAppState,
-}: ArticleParamsFormProps) => {
+export const ArticleParamsForm = ({ setAppState }: ArticleParamsFormProps) => {
 	const [panelState, setPanelState] = useState<boolean>(false);
-	const [formState, setFormState] = useState(appState);
+	const [formState, setFormState] = useState(defaultArticleState);
 	const asideRef = useRef<HTMLDivElement>(null);
 
 	const handleFormChange =
