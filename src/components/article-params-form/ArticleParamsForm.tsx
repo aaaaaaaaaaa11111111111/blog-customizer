@@ -9,9 +9,12 @@ import {
 	fontFamilyOptions,
 	OptionType,
 	fontSizeOptions,
+	fontColors,
+	defaultArticleState,
 } from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
+import { Separator } from 'src/ui/separator';
 
 type ArticleParamsFormProps = {
 	appState: ArticleStateType;
@@ -36,7 +39,12 @@ export const ArticleParamsForm = ({
 	const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setAppState(formState);
-		setPanelState(false);
+	};
+
+	const formReset = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setAppState(defaultArticleState);
+		setFormState(defaultArticleState);
 	};
 
 	return (
@@ -47,7 +55,7 @@ export const ArticleParamsForm = ({
 			/>
 			<aside
 				className={clsx(styles.container, panelState && styles.container_open)}>
-				<form className={styles.form} onSubmit={formSubmit}>
+				<form className={styles.form} onSubmit={formSubmit} onReset={formReset}>
 					<Text size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
@@ -62,7 +70,16 @@ export const ArticleParamsForm = ({
 						selected={formState.fontSizeOption}
 						options={fontSizeOptions}
 						onChange={handleFormChange('fontSizeOption')}
-						title={'размер шрифта'}></RadioGroup>
+						title={'размер шрифта'}
+					/>
+					<Select
+						selected={formState.fontColor}
+						options={fontColors}
+						onChange={handleFormChange('fontColor')}
+						title={'цвет шрифта'}
+					/>
+					<Separator />
+
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />
